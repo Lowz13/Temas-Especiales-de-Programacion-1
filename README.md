@@ -8,17 +8,20 @@ Las librerias necesarias de node son:
 npm install express cors mongoose
 ```
 
-Y al usar docker para mantener la base de datos arriba y conectarse de forma local se usara este comando 
+Y al usar docker para mantener la base de datos arriba y conectarse de forma local se usara este comando
 
-docker run -d \
-            --name my-mongodb \
-            -p 27017:27017 \
-            -e MONGO_INITDB_ROOT_USERNAME=admin \
-            -e MONGO_INITDB_ROOT_PASSWORD=secretpassword \
-            -v mongo_data:/data/db \
-            mongo:latest
+```
+docker run -d 
+--name my-mongodb 
+-p 27017:27017 
+-e MONGO_INITDB_ROOT_USERNAME=admin 
+-e MONGO_INITDB_ROOT_PASSWORD=secretpassword 
+-v mongo_data:/data/db 
+mongo:latest
+```
+
 Y para detener el contenedor se usara
 
 ```
- docker stop my-mongodb 
+docker stop my-mongodb 
 ```
