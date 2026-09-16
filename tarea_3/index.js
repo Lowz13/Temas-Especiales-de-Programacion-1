@@ -1,12 +1,19 @@
 // importacion de librerias y funciones 
 import express from "express";
 import cors from "cors";
+import mongoose from "mongoose";
+
 import {obtenerTodasLasPizzasAsync, 
   obtenerTodasLasPizzaPorIdAsync,
   agregarPizzaAsync,
   actualizarPizzaAsync,
   eliminarPizzaAsync} from './repositorios/pizza.repositorio.js'
-  
+
+
+// Configuración de la conexión a MongoDB
+const mongoURI = 'mongodb://admin:secretpassword@localhost:27017/pizzas?authSource=admin';
+
+
 // Configuración del servidor
 const app = express();
 app.use(cors());
@@ -32,11 +39,10 @@ app.get("/api/v1/pizzas/:id", async (req, res) => {
 // Configuración de la ruta POST para agregar una nueva pizza
 app.post("/api/v1/pizzas", async (req, res) => {
   const pizza = req.body
-  console.log(pizza)
-  await agregarPizzaAsync(pizza);
+  const pizzaCreada = await agregarPizzaAsync(pizza);
   const respuestaDto = {
     mensaje : "Pizza agregada",
-    id : pizza.id,
+    id : pizzaCreada._id,
     fecha: new Date()
   }
   return res.status(201).json(respuestaDto)
@@ -44,10 +50,10 @@ app.post("/api/v1/pizzas", async (req, res) => {
 
 // Configuración de la ruta PUT para actualizar una pizza por su ID
 app.put('/api/v1/pizzas/:id', async (req, res) => {
-    const id = Number(req.params.id);
+  const id = req.params.id;
     const datosActualizados = req.body;
 
-    const pizzaActualizada = await actualizarPizzaAsync({ id, ...datosActualizados });
+    const pizzaActualizada = await actualizarPizzaAsync({ _id: id, ...datosActualizados });
 
     if (!pizzaActualizada) return res.status(404).json({ error: "Pizza no encontrada" });
     res.json(pizzaActualizada);
@@ -55,7 +61,7 @@ app.put('/api/v1/pizzas/:id', async (req, res) => {
 
 // Configuración de la ruta DELETE para eliminar una pizza por su ID
 app.delete('/api/v1/pizzas/:id', async (req, res) => {
-    const id = req.params.id;   
+  const id = req.params.id;
   const eliminada = await eliminarPizzaAsync(id);
   if (!eliminada) return res.status(404).json({ error: "Pizza no encontrada" });
     res.json({ mensaje: `Pizza con id ${id} eliminada` });
@@ -65,3 +71,7 @@ app.delete('/api/v1/pizzas/:id', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor Express escuchando en el puerto http://localhost:${PORT}`);
 });
+
+mongoose.connect(mongoURI)
+  .then(() => console.log('¡Conectado exitosamente a MongoDB Docker! 🍕'))
+  .catch(err => console.error('Error al conectar a MongoDB:', err));

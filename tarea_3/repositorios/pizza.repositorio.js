@@ -1,64 +1,64 @@
-//capa donde persisten los datos
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-let pizzas = [{ id: 1, nombre: "Hawaiana", descripcion: "Jamon y piña" }];
+// Capa donde persisten los datos.
+import mongoose from "mongoose";
+
+const pizzaSchema = new mongoose.Schema({
+    nombre: { type: String, required: true },
+    descripcion: { type: String, required: true }
+});
+
+const Pizza = mongoose.models.Pizza || mongoose.model("Pizza", pizzaSchema);
 
 /**
  * Regresa una lista de las pizzas
- * @param {*} params 
- * @returns {Array} Lista de pizzas
+ * @returns {Promise<Array>} Lista de pizzas
  */
-export async function obtenerTodasLasPizzasAsync(params){
-    await sleep(2000); // Simula un retraso de 1 segundo
-    return pizzas;
+export async function obtenerTodasLasPizzasAsync(){
+    return Pizza.find();
 }
 
 /**
  * Regresa la pizza del id buscado o un undefined si no lo encuentra
- * @param {*} id 
- * @returns {Object} La pizza encontrada o undefined
+ * @param {string} id Identificador de MongoDB.
+ * @returns {Promise<Object|null>} La pizza encontrada o null
  */
 export async function obtenerTodasLasPizzaPorIdAsync(id){
-    await sleep(1000);
-    const pizza = pizzas.find(x => x.id == id);
-    return pizza;
+    if (!mongoose.isObjectIdOrHexString(id)) return null;
+    return Pizza.findById(id);
 }
 
 /**
  * Agrega una nueva pizza a la lista
- * @param {*} pizza 
+ * @param {Object} pizza Datos de la pizza.
+ * @returns {Promise<Object>} La pizza creada.
  */
 export async function agregarPizzaAsync(pizza){
-    await sleep(1000);
-    pizzas.push(pizza)
+    return Pizza.create(pizza);
 }
 
 /**
  * Actualiza la pizza con el id proporcionado y regresa la pizza actualizada o null si no se encontró
- * @param {*} pizza 
- * @returns {Object} La pizza actualizada o null si no se encontró
+ * @param {Object} pizza Pizza con `_id` y datos actualizados.
+ * @returns {Promise<Object|null>} La pizza actualizada o null si no se encontró
  */
 export async function actualizarPizzaAsync(pizza){
-    await sleep(1000);
-    const index = pizzas.findIndex(x => x.id == pizza.id);
-    if (index !== -1) {
-        pizzas[index] = { ...pizzas[index], ...pizza };
-        return pizzas[index];
-        }
-    return null; 
+    const { _id, ...datosAActualizar } = pizza;
+    if (!mongoose.isObjectIdOrHexString(_id)) return null;
 
+    return Pizza.findByIdAndUpdate(
+        _id,
+        datosAActualizar,
+        { returnDocument: "after", runValidators: true }
+    );
 }
 
 /**
  * elimina la pizza del id buscado y regresa true si la eliminó o false si no la encontró
- * @param {*} id 
- * @returns {boolean} true si se eliminó, false si no se encontró
+ * @param {string} id Identificador de MongoDB.
+ * @returns {Promise<boolean>} true si se eliminó, false si no se encontró
  */
 export async function eliminarPizzaAsync(id){
-    await sleep(1000);
-    const index = pizzas.findIndex(x => x.id == id);
-    if (index !== -1) {
-        pizzas = pizzas.filter(x => x.id != id);
-        return true;
-    }
-    return false;
+    if (!mongoose.isObjectIdOrHexString(id)) return false;
+
+    const resultado = await Pizza.findByIdAndDelete(id);
+    return resultado !== null;
 }
