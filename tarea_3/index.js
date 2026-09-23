@@ -1,27 +1,27 @@
-// importacion de librerias y funciones 
+// importacion de librerias y funciones
+import 'dotenv/config';
 import express from "express";
 import cors from "cors";
-import mongoose from "mongoose";
+import connectDB from './config/db.js'
 
-import {obtenerTodasLasPizzasAsync, 
+import {obtenerTodasLasPizzasAsync,
   obtenerTodasLasPizzaPorIdAsync,
   agregarPizzaAsync,
   actualizarPizzaAsync,
   eliminarPizzaAsync} from './repositorios/pizza.repositorio.js'
 
 
-// Configuración de la conexión a MongoDB
-const mongoURI = 'mongodb://admin:secretpassword@localhost:27017/pizzas?authSource=admin';
-
-
 // Configuración del servidor
 const app = express();
 app.use(cors());
-const PORT = 3000;
+
 
 //Config para usar el body en POST
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+const PORT = process.env.PORT || 3000;
+connectDB(); // Conectar a la base de datos
 
 // Configuración de la ruta GET para obtener todas las pizzas
 app.get("/api/v1/pizzas", async (req, res) => {
@@ -69,9 +69,9 @@ app.delete('/api/v1/pizzas/:id', async (req, res) => {
 
 // Inicia el servidor
 app.listen(PORT, () => {
-  console.log(`Servidor Express escuchando en el puerto http://localhost:${PORT}`);
+  console.log(`Servidor Express escuchando en el puerto ${PORT}`);
 });
 
-mongoose.connect(mongoURI)
-  .then(() => console.log('¡Conectado exitosamente a MongoDB Docker! 🍕'))
-  .catch(err => console.error('Error al conectar a MongoDB:', err));
+// mongoose.connect(mongoURI)
+//   .then(() => console.log('¡Conectado exitosamente a MongoDB Docker! 🍕'))
+//   .catch(err => console.error('Error al conectar a MongoDB:', err));

@@ -1,0 +1,278 @@
+{
+  "info": {
+    "_postman_id": "df29fbdf-d0ce-4057-8e84-915a4234dff0",
+    "name": "PIzzas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53464647",
+    "_collection_link": "https://go.postman.co/collection/53464647-df29fbdf-d0ce-4057-8e84-915a4234dff0?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "LIstar Pizzas",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Devuelve estado 200\", () => {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Devuelve una lista de pizzas\", () => {\n    const respuesta = pm.response.json();\n\n    pm.expect(respuesta).to.have.property(\"data\");\n    pm.expect(respuesta.data).to.have.property(\"pizzas_disponibles\");\n    pm.expect(respuesta.data.pizzas_disponibles).to.be.an(\"array\");\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:3000/api/v1/pizzas/",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "pizzas",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear pizza",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const idGenerado = Date.now();\npm.collectionVariables.set(\"pizzaId\", idGenerado);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Devuelve estado 201\", () => {\n    pm.response.to.have.status(201);\n});\n\npm.test(\"Devuelve la pizza creada\", () => {\n    const respuesta = pm.response.json();\n    const pizza = respuesta.data.pizza;\n    const pizzaId = Number(pm.collectionVariables.get(\"pizzaId\"));\n\n    pm.expect(pizza.id).to.eql(pizzaId);\n    pm.expect(pizza.nombre).to.eql(\"Pizza Postman\");\n    pm.expect(pizza.descripcion).to.eql(\n        \"Pizza creada durante las pruebas\"\n    );\n    pm.expect(pizza).to.have.property(\"_id\");\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"nombre\": \"Pizza Postman\",\n    \"descripcion\": \"Pizza creada durante las pruebas\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:3000/api/v1/pizzas/",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "pizzas",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buscar pizza por ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Devuelve estado 200\", () => {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Devuelve la pizza solicitada\", () => {\n    const respuesta = pm.response.json();\n    const pizza = respuesta.data.pizza;\n    const pizzaId = Number(pm.collectionVariables.get(\"pizzaId\"));\n\n    pm.expect(pizza.id).to.eql(pizzaId);\n    pm.expect(pizza.nombre).to.eql(\"Pizza Postman\");\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:3000/api/v1/pizzas/",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "pizzas",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Actualizar pizza",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Devuelve estado 200\", () => {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Devuelve los datos actualizados\", () => {\n    const respuesta = pm.response.json();\n    const pizza = respuesta.data.pizza;\n    const pizzaId = Number(pm.collectionVariables.get(\"pizzaId\"));\n\n    pm.expect(pizza.id).to.eql(pizzaId);\n    pm.expect(pizza.nombre).to.eql(\n        \"Pizza Postman actualizada\"\n    );\n    pm.expect(pizza.descripcion).to.eql(\n        \"Pizza modificada mediante una petición PUT\"\n    );\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"nombre\": \"Pizza Postman actualizada\",\n    \"descripcion\": \"Pizza modificada mediante una petición PUT\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "localhost:3000/api/v1/pizzas/",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "pizzas",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar pizza",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Devuelve estado 200\", () => {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Devuelve la pizza eliminada\", () => {\n    const respuesta = pm.response.json();\n    const pizza = respuesta.data.pizza;\n    const pizzaId = Number(pm.collectionVariables.get(\"pizzaId\"));\n\n    pm.expect(pizza.id).to.eql(pizzaId);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "localhost:3000/api/v1/pizzas/",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "pizzas",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Comprobar eliminación",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Devuelve estado 404\", () => {\n    pm.response.to.have.status(404);\n});\n\npm.test(\"Informa que la pizza no existe\", () => {\n    const respuesta = pm.response.json();\n    pm.expect(respuesta).to.have.property(\"message\");\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "localhost:3000/api/v1/pizzas/",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "pizzas",
+            ""
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "pizzaID",
+      "value": ""
+    },
+    {
+      "key": "pizzaId",
+      "value": ""
+    }
+  ]
+}

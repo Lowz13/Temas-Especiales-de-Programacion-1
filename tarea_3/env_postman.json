@@ -1,0 +1,22 @@
+{
+	"id": "fa99069d-7286-4b01-87ef-e7236c0dab59",
+	"name": "dev",
+	"values": [
+		{
+			"key": "dev",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "docker",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"color": null,
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2026-09-22T22:55:25.168Z",
+	"_postman_exported_using": "Postman/12.27.7"
+}
