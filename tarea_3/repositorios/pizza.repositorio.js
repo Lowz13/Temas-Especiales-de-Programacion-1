@@ -21,7 +21,7 @@ export async function obtenerTodasLasPizzasAsync(){
  * @param {string} id Identificador de MongoDB.
  * @returns {Promise<Object|null>} La pizza encontrada o null
  */
-export async function obtenerTodasLasPizzaPorIdAsync(id){
+export async function obtenerTodasLasPizzaPorIdAsync(id) {
     if (!mongoose.isObjectIdOrHexString(id)) return null;
     return Pizza.findById(id);
 }
@@ -31,7 +31,9 @@ export async function obtenerTodasLasPizzaPorIdAsync(id){
  * @param {Object} pizza Datos de la pizza.
  * @returns {Promise<Object>} La pizza creada.
  */
-export async function agregarPizzaAsync(pizza){
+export async function agregarPizzaAsync(pizza) {
+  let id = await Pizza.countDocuments({}) + 1
+      console.log(id)
     return Pizza.create(pizza);
 }
 

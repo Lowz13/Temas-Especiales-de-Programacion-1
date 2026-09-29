@@ -1,4 +1,29 @@
 @baseUrl = http://localhost:3000
+@pizzaId = reemplaza-con-un-id-de-mongodb
 
-## Get
+### Obtener todas las pizzas
 GET {{baseUrl}}/api/v1/pizzas
+
+### Obtener una pizza por id
+GET {{baseUrl}}/api/v1/pizzas/{{pizzaId}}
+
+### Agregar una pizza
+POST {{baseUrl}}/api/v1/pizzas
+Content-Type: application/json
+
+{
+	"nombre": "Peperoni",
+	"descripcion": "Queso, salsa de tomate y peperoni"
+}
+
+### Actualizar una pizza por id
+PUT {{baseUrl}}/api/v1/pizzas/{{pizzaId}}
+Content-Type: application/json
+
+{
+	"nombre": "Peperoni especial",
+	"descripcion": "Queso, salsa de tomate, peperoni y champinones"
+}
+
+### Eliminar una pizza por id
+DELETE {{baseUrl}}/api/v1/pizzas/{{pizzaId}}
